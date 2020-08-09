@@ -6,6 +6,8 @@ import 'BankACPage.dart';
 import 'CreditCardPage.dart';
 import 'CategoricalLimitsPage.dart';
 import 'AboutPage.dart';
+import 'SimulatedAPIPage.dart';
+import 'package:intl/intl.dart';
 
 Map<String, List> daysMap = {'Mon': [1, 'M'], 'Tue': [2, 'T'], 'Wed': [3, 'W'], 'Thu': [4, 'T'], 'Fri': [5, 'F'], 'Sat': [6, 'S']};
 
@@ -162,6 +164,15 @@ Theme drawer(context) {
           ),
           Container(
             child: tile(
+                context: context, title: 'Simulate', pageToOpen: HomeSimulatedPage(),
+                leadingIcon: Icons.equalizer),
+            color: kBackgroundColor,
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+            child: tile(
               context: context,
               title: 'Sign Out',
               pageToOpen: GetStartedPage(),
@@ -190,7 +201,7 @@ List<Widget> formattedOutputForStack({startX, startY, name, amount, date}) {
       right: startX,
       top: startY,
       child: Text(
-        '$amount \$',
+        '${NumberFormat.currency(symbol: '').format(double.parse(amount))} \$',
         style: kGenericDisplayStyle(
             color: activatedButtonColor, size: 18, weight: FontWeight.w600),
       ),),

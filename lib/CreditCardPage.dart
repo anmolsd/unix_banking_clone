@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:unixbankingclone/SimulatedAPIPage.dart';
 import 'constants.dart';
+import 'package:intl/intl.dart';
 
 class CreditCardPage extends StatelessWidget {
   @override
@@ -49,14 +51,25 @@ class CreditCardPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            '\$15,694.26',
-                            style: TextStyle(
-                              fontFamily: 'Rubik',
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 35,),
-                          ),
+                      FutureBuilder(
+                      future: getTotalSpent(15694.26, choice: 'CC'),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {
+                          return Text(
+                            NumberFormat.currency(symbol: '\$').format(2 * 15694.26 - snapshot.data),
+                            style: kGenericDisplayStyle(
+                                color: Colors.white, size: 40, weight: FontWeight.w400, height: 0.0),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Loading Error. Reopen page from drawer.');
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 15.0, right: 15),
+                            child: LinearProgressIndicator(backgroundColor: Colors.white,),
+                          );
+                        }
+                      }
+                      ),
                           Text(
                             'Current Balance',
                             style: TextStyle(
@@ -64,7 +77,7 @@ class CreditCardPage extends StatelessWidget {
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
-                                height: 1.5),
+                                height: 2.5),
                           )
                         ],
                       ),
@@ -140,14 +153,7 @@ class CreditCardPage extends StatelessWidget {
           ),
           Expanded(
             flex: 3,
-            child: Stack(
-              children: [
-                formattedOutputForStack(startX: 20, startY: 20, name: 'Starbucks Coffee', date: '19 Nov 2019', amount: '- 5.99'),
-                formattedOutputForStack(startX: 20, startY: 80, name: 'Walmart', date: '18 Nov 2019', amount: '- 15.99'),
-                formattedOutputForStack(startX: 20, startY: 140, name: 'Apple', date: '16 Nov 2019', amount: '- 749.99'),
-                formattedOutputForStack(startX: 20, startY: 200, name: 'Marks and Spencer', date: '15 Nov 2019', amount: '- 99.99'),
-              ].expand((element) => element).toList(),
-            ),
+            child: getNMostRecentTransactions(n: 4),
           )
         ],
       ),

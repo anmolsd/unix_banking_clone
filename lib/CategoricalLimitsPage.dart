@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:unixbankingclone/SimulatedAPIPage.dart';
 import 'package:unixbankingclone/custom_icons.dart';
 import 'package:unixbankingclone/graphs.dart';
 import 'constants.dart';
@@ -21,7 +22,8 @@ class CategoricalLimitsPage extends StatelessWidget {
                   padding: const EdgeInsets.all(20.0),
                   child: Text(
                     'Basic',
-                    style: kGenericDisplayStyle(color: kHeadingTextColor, size: 35),
+                    style: kGenericDisplayStyle(
+                        color: kHeadingTextColor, size: 35),
                   ),
                 ),
               ),
@@ -100,7 +102,8 @@ class CategoricalLimitsPage extends StatelessWidget {
                   padding: const EdgeInsets.all(20.0),
                   child: Text(
                     'Categories',
-                    style: kGenericDisplayStyle(color: kHeadingTextColor, size: 35),
+                    style: kGenericDisplayStyle(
+                        color: kHeadingTextColor, size: 35),
                   ),
                 ),
               ),
@@ -166,7 +169,10 @@ class CategoricalLimitsPage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  EntertainmentPage(current: 1575.44, limit: 2500.00,))),
+                                  EntertainmentPage(
+                                    current: 1575.44,
+                                    limit: 2500.00,
+                                  ))),
                     ),
                   ),
                 ),
@@ -199,7 +205,10 @@ class CategoricalLimitsPage extends StatelessWidget {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => FoodPage(current: 1233.75, limit: 3000,))),
+                              builder: (BuildContext context) => FoodPage(
+                                    current: 1233.75,
+                                    limit: 3000,
+                                  ))),
                     ),
                   ),
                 ),
@@ -226,56 +235,40 @@ class FoodPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.width,
-                  width: MediaQuery.of(context).size.height / 3,
-                  child: CustomPaint(
-                    painter: CircularProgress(
-                        category: 'Food',
-                        current: current,
-                        limit: limit,
-                        icon: CustomIcons.food),
-                  ),
-                ),
+              child: FutureBuilder(
+                future: getTotalSpent(current, filter: 'Entertainment'),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.width,
+                        width: MediaQuery.of(context).size.height / 3,
+                        child: CustomPaint(
+                          painter: CircularProgress(
+                              category: 'Food',
+                              current: snapshot.data.toDouble(),
+                              limit: limit,
+                              icon: CustomIcons.food),
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error);
+                  } else {
+                    return Center(
+                      child: Container(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator()
+                      ),
+                    );
+                  }
+                },
               ),
             ),
             Expanded(
-              child: Stack(
-                children: [
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 20,
-                      name: 'Burger King',
-                      amount: '- 2.99',
-                      date: '18 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 80,
-                      name: 'Pizza Hut',
-                      amount: '- 29.99',
-                      date: '18 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 140,
-                      name: 'Taco Bell',
-                      amount: '- 15.99',
-                      date: '18 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 200,
-                      name: 'Pizza Hut',
-                      amount: '- 16.99',
-                      date: '17 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 260,
-                      name: 'Yo! China',
-                      amount: '- 12.99',
-                      date: '17 Nov 2019'),
-                ].expand((element) => element).toList(),
-              ),
+              child: getNMostRecentTransactions(n: 5, filter: 'Food'),
             )
           ],
         ),
@@ -298,56 +291,40 @@ class EntertainmentPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.width,
-                  width: MediaQuery.of(context).size.height / 3,
-                  child: CustomPaint(
-                    painter: CircularProgress(
-                        category: 'Entertainment',
-                        current: current,
-                        limit: limit,
-                        icon: Icons.tv),
-                  ),
-                ),
+              child: FutureBuilder(
+                future: getTotalSpent(current, filter: 'Entertainment'),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.width,
+                        width: MediaQuery.of(context).size.height / 3,
+                        child: CustomPaint(
+                          painter: CircularProgress(
+                              category: 'Entertainment',
+                              current: snapshot.data.toDouble(),
+                              limit: limit,
+                              icon: Icons.tv),
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error);
+                  } else {
+                    return Center(
+                      child: Container(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator()
+                      ),
+                    );
+                  }
+                },
               ),
             ),
             Expanded(
-              child: Stack(
-                children: [
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 20,
-                      name: 'PVR Cinemas',
-                      amount: '- 39.99',
-                      date: '18 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 80,
-                      name: 'PVR Cinemas',
-                      amount: '- 19.99',
-                      date: '11 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 140,
-                      name: 'Got Talent',
-                      amount: '- 49.99',
-                      date: '1 Nov 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 200,
-                      name: 'PVR Cinemas',
-                      amount: '- 19.99',
-                      date: '15 Oct 2019'),
-                  formattedOutputForStack(
-                      startX: 20,
-                      startY: 260,
-                      name: 'Hamilton Musical',
-                      amount: '- 39.99',
-                      date: '1 Oct 2019'),
-                ].expand((element) => element).toList(),
-              ),
+              child: getNMostRecentTransactions(n: 5, filter: 'Entertainment'),
             )
           ],
         ),
@@ -368,15 +345,35 @@ class BudgetPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 30.0, right: 30),
-                  child: CustomPaint(
-                    painter: SemiCircularProgressBudgetPainter(
-                        current: 4101.67, limit: 6000),
-                  ),
-                ),),
-            SizedBox(height: 20,),
+              flex: 1,
+              child: FutureBuilder(
+                future: getTotalSpent(4101.67, filter: "None2"),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 30.0, right: 30),
+                      child: CustomPaint(
+                        painter: SemiCircularProgressBudgetPainter(
+                            current: snapshot.data.toDouble(), limit: 8500),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error);
+                  } else {
+                    return Center(
+                      child: Container(
+                        height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator()
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Expanded(
               flex: 1,
               child: Padding(
@@ -413,40 +410,7 @@ class BudgetPage extends StatelessWidget {
               flex: 2,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Stack(
-                  children: [
-                    formattedOutputForStack(
-                        startX: 20,
-                        startY: 20,
-                        name: 'Burger King',
-                        amount: '- 2.99',
-                        date: '18 Nov 2019'),
-                    formattedOutputForStack(
-                        startX: 20,
-                        startY: 80,
-                        name: 'Pizza Hut',
-                        amount: '- 29.99',
-                        date: '18 Nov 2019'),
-                    formattedOutputForStack(
-                        startX: 20,
-                        startY: 140,
-                        name: 'Taco Bell',
-                        amount: '- 15.99',
-                        date: '18 Nov 2019'),
-                    formattedOutputForStack(
-                        startX: 20,
-                        startY: 200,
-                        name: 'PVR Cinemas',
-                        amount: '- 39.99',
-                        date: '18 Nov 2019'),
-                    formattedOutputForStack(
-                        startX: 20,
-                        startY: 260,
-                        name: 'Pizza Hut',
-                        amount: '- 16.99',
-                        date: '17 Nov 2019'),
-                  ].expand((element) => element).toList(),
-                ),
+                child: getNMostRecentTransactions(n: 5, startY: 15),
               ),
             ),
           ],

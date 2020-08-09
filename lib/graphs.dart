@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:unixbankingclone/custom_icons.dart';
 import 'constants.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
@@ -31,6 +30,7 @@ final transitionsIncomeGraphCoordinates = [
   [54.5, 10.285],
   [69, 148.444]
 ];
+
 final spentGraphCoordinates = [
   [0, 2.51752],
   [1, 5.23884],
@@ -293,7 +293,7 @@ class CircularProgress extends CustomPainter {
         Rect.fromCircle(
             center: Offset(size.width / 2, size.height / 2), radius: radius),
         -pi / 2,
-        endAngle,
+        endAngle > 2 * pi ? 2 * pi : endAngle,
         false,
         Paint()
           ..color = kHeadingTextColor
@@ -303,7 +303,7 @@ class CircularProgress extends CustomPainter {
     TextSpan span0 = TextSpan(
         text: NumberFormat.currency(symbol: '\$').format(current),
         style: kGenericDisplayStyle(
-            color: kHeadingTextColor, size: 35, weight: FontWeight.w400));
+            color: current < limit ? kHeadingTextColor : Colors.redAccent, size: 35, weight: FontWeight.w400));
     TextPainter tp0 =
     TextPainter(text: span0, textDirection: ui.TextDirection.ltr);
     tp0.layout();
@@ -343,7 +343,7 @@ class SemiCircularProgressBudgetPainter extends CustomPainter {
         Rect.fromCenter(
             center: Offset(size.width / 2, size.height), width: 2 * radius, height: 2 * radius),
         -pi,
-        endAngle,
+        endAngle > pi ? pi : endAngle,
         false,
         Paint()
           ..color = kHeadingTextColor
@@ -353,7 +353,7 @@ class SemiCircularProgressBudgetPainter extends CustomPainter {
     TextSpan span0 = TextSpan(
         text: NumberFormat.currency(symbol: '\$').format(current),
         style: kGenericDisplayStyle(
-            color: kHeadingTextColor, size: 35, weight: FontWeight.w400));
+            color: current < limit ? kHeadingTextColor : Colors.redAccent, size: 35, weight: FontWeight.w400));
     TextPainter tp0 =
     TextPainter(text: span0, textDirection: ui.TextDirection.ltr);
     tp0.layout();

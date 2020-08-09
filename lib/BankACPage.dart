@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:unixbankingclone/SimulatedAPIPage.dart';
 import 'constants.dart';
 import 'graphs.dart';
 
@@ -70,10 +72,21 @@ class _BankACPageState extends State<BankACPage> with SingleTickerProviderStateM
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      '\$12,928.12',
-                      style: kGenericDisplayStyle(
-                          color: kHeadingTextColor, size: 40, weight: FontWeight.w400, height: 0.0),
+                    FutureBuilder(
+                      future: getTotalSpent(12928.12, choice: 'Bank'),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {
+                          return Text(
+                            NumberFormat.currency(symbol: '\$').format((2 * 12928.12 - snapshot.data)),
+                            style: kGenericDisplayStyle(
+                                color: kHeadingTextColor, size: 40, weight: FontWeight.w400, height: 0.0),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text(snapshot.error);
+                        } else {
+                          return LinearProgressIndicator(backgroundColor: Colors.white,);
+                        }
+                      },
                     ),
                     Text('Current Balance',
                       style: kGenericDisplayStyle(
@@ -157,12 +170,7 @@ class _BankACPageState extends State<BankACPage> with SingleTickerProviderStateM
             ),
             Expanded(
               flex: 2,
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Stack(
-                  children: formattedOutputForStack(startX: 25.0, startY: 45.0, name: 'Mixcloud Premium', amount: '5.99', date: '19 Nov 2019')
-              ),
-            ),
+              child: getNMostRecentTransactions(n: 1),
             ),
         ],
         ),
